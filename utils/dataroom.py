@@ -58,7 +58,7 @@ class DataRoom:
         self.gen_img_notes(model)
     
     def get_notes(self) -> str:
-        return '\n\n\n'.join(f'Notes for file: `{k}`:\n{v}' for k, v in self.file_notes)
+        return '\n\n\n'.join(f'Notes for file: `{k}`:\n{v}' for k, v in self.file_notes.items())
     
 
 
