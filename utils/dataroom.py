@@ -5,7 +5,7 @@ from PIL import Image
 import google.generativeai as genai
 
 class DataRoom:
-    VALID_FILES = ['.txt', '.png', '.md', '.pdf']
+    VALID_FILES = ['.txt', '.png', '.md', '.pdf', '.html', '.xml']
 
     def __init__(self, dataroom_path: str) -> None:
         self.dataroom_path = dataroom_path
@@ -51,14 +51,28 @@ class DataRoom:
             try:
                 self.file_notes[file] = notes.text
             except AttributeError:
-                pass    
+                print(f"WARNING: failed to generate notes for {file}")
+    
+    def gen_html_notes(self, model: genai.GenerativeModel):
+        for file, filepath in zip(self.files, self.filepaths):
+            if not any(file.endswith(i) for i in ('.html', '.xml')):
+                continue
+            with open(filepath, 'r') as f:
+                html = f.read()
+            notes = model.generate_content([f'Write notes about this in markdown:\n{html}'])
+            try:
+                self.file_notes[file] = notes.text
+            except AttributeError:
+                print(f"WARNING: failed to generate notes for {file}")
+
     def gen_all_notes(self, model: genai.GenerativeModel):
         self.get_text_notes(model)
         self.gen_pdf_notes(model)
         self.gen_img_notes(model)
+        self.gen_html_notes(model)
     
     def get_notes(self) -> str:
-        return '\n\n\n'.join(f'Notes for file: `{k}`:\n{v}' for k, v in self.file_notes.items())
+        return '\n\n\n'.join(f'Notes:\n{v}' for k, v in self.file_notes.items())
     
 
 

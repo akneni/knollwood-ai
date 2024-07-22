@@ -5,19 +5,25 @@ import utils.pdf
 import shelve
 
 
+if not os.path.exists('outputs'):
+    os.mkdir('outputs')
+if not os.path.exists('dataroom'):
+    os.mkdir('dataroom')
+
+
 tmpl = utils.templates.Templates('./templates/agent-templates.json', './templates/task-templates.json')
 dr = utils.dataroom.DataRoom('./dataroom')
 
 genai.configure(api_key=GEMINI_KEY)
 model = genai.GenerativeModel(
-    'gemini-1.5-flash',
+    'gemini-1.5-pro',
     system_instruction=tmpl.researcher
 )
 dr.gen_all_notes(model)
 print('finished generating all notes')
 
 model = genai.GenerativeModel(
-    'gemini-1.5-flash',
+    'gemini-1.5-pro',
     system_instruction=tmpl.writer
 )
 
