@@ -1,0 +1,6 @@
+secrets.*
+apikeys.*
+*.ipynb
+dataroom/*
+outputs/*
+*/__pycache__
